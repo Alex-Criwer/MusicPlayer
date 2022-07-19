@@ -1,7 +1,8 @@
 package com.example.musicplayerapp.presentation.playlist
 
-import android.support.v7.app.AppCompatActivity
+
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.musicplayerapp.R
 import com.example.musicplayerapp.presentation.playlist.helpers.SongClickListener
 
