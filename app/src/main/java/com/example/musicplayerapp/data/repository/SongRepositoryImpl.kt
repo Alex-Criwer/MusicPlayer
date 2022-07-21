@@ -12,4 +12,8 @@ class SongRepositoryImpl(val storage: SongRoomDatabase): SongRepository {
     override fun deleteSong(song: Song) {
         storage.songDao().deleteSong(song)
     }
+
+    override fun getAllSongs(): List<Song> {
+        return storage.songDao().getAllSongs()
+    }
 }
