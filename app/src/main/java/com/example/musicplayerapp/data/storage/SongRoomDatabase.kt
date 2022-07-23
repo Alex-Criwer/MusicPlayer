@@ -6,7 +6,7 @@ import com.example.musicplayerapp.data.storage.dao.SongDao
 import com.example.musicplayerapp.data.storage.entity.Song
 
 
-@Database(entities = [Song::class], version = 1)
+@Database(entities = [Song::class], version = 3, exportSchema = false)
 abstract class SongRoomDatabase: RoomDatabase() {
 
     abstract fun songDao(): SongDao

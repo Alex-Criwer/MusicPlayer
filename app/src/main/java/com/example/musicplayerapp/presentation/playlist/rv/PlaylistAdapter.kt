@@ -29,9 +29,9 @@ class PlaylistAdapter(val songClickListener: SongClickListener): RecyclerView.Ad
 
         fun onBind(song: Song) {
             songName.text = song.title
-            Glide.with(itemView.context)
-                 .load(song.icon)
-                 .into(songIcon)
+//            Glide.with(itemView.context)
+//                 .load(song.icon)
+//                 .into(songIcon)
 
             itemView.setOnClickListener {
                 songClickListener.onSongIconClick(song)
