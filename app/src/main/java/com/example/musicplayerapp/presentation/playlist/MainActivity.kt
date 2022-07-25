@@ -34,7 +34,11 @@ class MainActivity : AppCompatActivity(), SongClickListener {
         initViews()
         initRV()
         initSubscribe()
+    }
 
+    override fun onStart() {
+        super.onStart()
+        vm.getAllSongsFromDB()
     }
 
     override fun onSongIconClick(song: Song) {

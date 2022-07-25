@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.musicplayerapp">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".app.App"
@@ -16,6 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicPlayerApp"
         tools:targetApi="31">
+        <activity
+            android:name=".PlayerActivity"
+            android:exported="false"
+            android:label="@string/title_activity_player"
+            android:theme="@style/Theme.MusicPlayerApp.NoActionBar" />
         <activity
             android:name=".presentation.playlist.MainActivity"
             android:exported="true">

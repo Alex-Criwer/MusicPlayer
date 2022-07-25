@@ -40,4 +40,12 @@ class PlaylistViewModel(
         deleteSongUseCase.execute(song)
         playlistLiveMutable.value = getAllSongsUseCase.execute()
     }
+
+    fun getAllSongsFromDB() {
+        viewModelScope.launch(errorHandler) {
+            withContext(Dispatchers.IO) {
+                playlistLiveMutable.postValue(getAllSongsUseCase.execute())
+            }
+        }
+    }
 }
