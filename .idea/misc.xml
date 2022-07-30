@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Asus/AndroidStudioProjects/MusicPlayerApp/app/player/src/main/res/layout/activity_main.xml" value="0.2359375" />
+        <entry key="..\:/Users/Asus/AndroidStudioProjects/MusicPlayerApp/app/src/main/res/drawable/ic_pause_vector.xml" value="0.205" />
+        <entry key="..\:/Users/Asus/AndroidStudioProjects/MusicPlayerApp/app/src/main/res/drawable/ic_play_vector.xml" value="0.205" />
+        <entry key="..\:/Users/Asus/AndroidStudioProjects/MusicPlayerApp/app/src/main/res/drawable/ic_skip_back_vector.xml" value="0.205" />
+        <entry key="..\:/Users/Asus/AndroidStudioProjects/MusicPlayerApp/app/src/main/res/drawable/ic_skip_next_vector.xml" value="0.205" />
         <entry key="..\:/Users/Asus/AndroidStudioProjects/MusicPlayerApp/app/src/main/res/drawable/music_note.xml" value="0.18" />
         <entry key="..\:/Users/Asus/AndroidStudioProjects/MusicPlayerApp/app/src/main/res/drawable/plus.xml" value="0.18" />
         <entry key="..\:/Users/Asus/AndroidStudioProjects/MusicPlayerApp/app/src/main/res/layout/activity_main.xml" value="0.2" />
