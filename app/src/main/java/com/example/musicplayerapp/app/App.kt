@@ -3,7 +3,6 @@ package com.example.musicplayerapp.app
 import android.app.Application
 import com.example.musicplayerapp.di.dataModule
 import com.example.musicplayerapp.di.domainModule
-import com.example.musicplayerapp.di.playerModule
 import com.example.musicplayerapp.di.presentationModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -18,7 +17,7 @@ class App: Application() {
 
         startKoin {
             androidContext(this@App)
-            modules(listOf(dataModule, domainModule, presentationModule, playerModule))
+            modules(listOf(dataModule, domainModule, presentationModule))
         }
     }
 }

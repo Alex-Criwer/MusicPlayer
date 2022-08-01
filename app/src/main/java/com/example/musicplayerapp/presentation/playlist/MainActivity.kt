@@ -3,8 +3,13 @@ package com.example.musicplayerapp.presentation.playlist
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,11 +20,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicplayerapp.R
 import com.example.musicplayerapp.data.storage.entity.Song
+import com.example.musicplayerapp.data.storage.entity.Song.Companion.createMediaItem
+import com.example.musicplayerapp.presentation.player.PlayerActivity
 import com.example.musicplayerapp.presentation.playlist.helpers.SongClickListener
 import com.example.musicplayerapp.presentation.playlist.rv.PlaylistAdapter
 import com.example.musicplayerapp.presentation.playlist.viewmodel.PlaylistViewModel
+import com.example.service.PlayerService
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity(), SongClickListener {
@@ -27,6 +36,22 @@ class MainActivity : AppCompatActivity(), SongClickListener {
     private lateinit var songsAdapter: PlaylistAdapter
     private lateinit var songsRecyclerView: RecyclerView
     private lateinit var fab: ExtendedFloatingActionButton
+
+    private var isBound = false
+    private var playerService: PlayerService?= null
+
+    private val startConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+            isBound = true
+            playerService = (binder as PlayerService.LocalBinder).getService()
+            Timber.d("player onServiceConnected $playerService")
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isBound = false
+            playerService = null
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +64,17 @@ class MainActivity : AppCompatActivity(), SongClickListener {
     override fun onStart() {
         super.onStart()
         vm.getAllSongsFromDB()
+        onBindService()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        onUnbindService()
     }
 
     override fun onSongIconClick(song: Song) {
-        TODO("Not yet implemented")
+        Timber.d("player s state is $playerService")
+        playerService?.play(song.createMediaItem())
     }
 
     private fun initViews() {
@@ -54,7 +86,7 @@ class MainActivity : AppCompatActivity(), SongClickListener {
                 requestPermission()
                 return@setOnClickListener
             }
-            getMusicList()
+            openMusicList()
         }
     }
 
@@ -76,11 +108,14 @@ class MainActivity : AppCompatActivity(), SongClickListener {
 
     private fun requestPermission() {
         requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_PERMISSION_CODE)
+        if (checkPermission()) {
+            openMusicList()
+        }
     }
 
 
     @SuppressLint("Range")
-    private fun getMusicList() {
+    private fun addMusic(uri: Uri) {
         var numberOfSongs = 0
 
         val projection = arrayOf(
@@ -91,7 +126,7 @@ class MainActivity : AppCompatActivity(), SongClickListener {
         )
 
         val cursor = contentResolver?.query(
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            uri,
             projection,null, null, null)
 
         while (cursor?.moveToNext() == true) {
@@ -112,7 +147,42 @@ class MainActivity : AppCompatActivity(), SongClickListener {
         cursor?.close()
     }
 
+    private fun openMusicList() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, PICK_AUDIO_KEY)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == PICK_AUDIO_KEY) {
+            data?.data?.let {
+                addMusic(it)
+            }
+        }
+    }
+
+
+    private fun onBindService() {
+        if (!isBound) {
+            val res = bindService(
+                Intent(this, PlayerService::class.java),
+                startConnection,
+                BIND_AUTO_CREATE)
+            //isBound = true
+            Timber.d("player onBind service in activity $res")
+        }
+    }
+
+    private fun onUnbindService() {
+        if (isBound) {
+            unbindService(startConnection)
+            isBound = false
+            Timber.d("player onUnbind service")
+        }
+    }
+
     companion object {
         const val REQUEST_PERMISSION_CODE = 111
+        const val PICK_AUDIO_KEY = 112
     }
 }

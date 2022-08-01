@@ -4,10 +4,12 @@
     package="com.example.musicplayerapp">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:name=".app.App"
         android:allowBackup="true"
+        android:requestLegacyExternalStorage="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -17,19 +19,26 @@
         android:theme="@style/Theme.MusicPlayerApp"
         tools:targetApi="31">
         <activity
+            android:launchMode="singleTop"
             android:name=".presentation.player.PlayerActivity"
             android:exported="false"
             android:label="@string/title_activity_player"
-            android:theme="@style/Theme.MusicPlayerApp.NoActionBar" />
+            android:theme="@style/Theme.MusicPlayerApp.NoActionBar">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".presentation.playlist.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name="com.example.service.PlayerService"/>
     </application>
 
 </manifest>
