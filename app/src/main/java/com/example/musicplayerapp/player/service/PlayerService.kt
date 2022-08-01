@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.example.music_player.PlayerInstance
 import com.example.notification.PlayerNotificationManager
 import com.google.android.exoplayer2.MediaItem
@@ -30,6 +31,7 @@ class PlayerService: Service() {
     }
 
     fun play(mediaItem: MediaItem){
+        notificationManager.updateNotification(this, mediaItem.mediaMetadata.albumTitle.toString())
         Timber.d("player in service play")
         player?.play(mediaItem)
     }
@@ -40,12 +42,24 @@ class PlayerService: Service() {
         }
     }
 
+    fun startForeground() {
+        ContextCompat.startForegroundService(
+            applicationContext,
+            Intent(this, PlayerService::class.java)
+        )
+    }
+
     override fun onCreate() {
         super.onCreate()
         player = PlayerInstance(this)
-        val notification = notificationManager.createNotification(this, "AAAAAA")
+        val notification = notificationManager.createNotification(this, "")
         Timber.d("player onCreate service")
         startForeground(PlayerNotificationManager.NOTIFICATION_ID, notification)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        player?.release()
     }
 
     private fun createCoroutineScope() = CoroutineScope(Job() + Dispatchers.IO)

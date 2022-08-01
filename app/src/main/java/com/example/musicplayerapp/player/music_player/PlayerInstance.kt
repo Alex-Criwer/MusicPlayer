@@ -12,6 +12,8 @@ class PlayerInstance(val context: Context): Player.Listener {
 
     fun play(mediaItem: MediaItem) {
         Timber.d("player start playing, state is $player")
+        stop()
+        initializePlayer()
         try {
             player?.let {
                 it.setMediaItem(mediaItem)
@@ -22,6 +24,14 @@ class PlayerInstance(val context: Context): Player.Listener {
         } catch (e: Exception) {
             Timber.d("player exception ${e.message}")
         }
+    }
+
+    fun stop() {
+        player?.stop()
+    }
+
+    fun release() {
+        player?.release()
     }
 
     private fun initializePlayer() {

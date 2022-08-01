@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.musicplayerapp.R
 
 class PlayerNotificationManager {
@@ -25,6 +26,11 @@ class PlayerNotificationManager {
         notificationManager.createNotificationChannel(createChannel(context))
 
         return notificationBuilder.build()
+    }
+
+    fun updateNotification(context: Context, title: String) {
+        val notification = createNotification(context, title)
+        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
     }
 
 

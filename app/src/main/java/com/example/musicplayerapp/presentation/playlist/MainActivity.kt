@@ -44,10 +44,12 @@ class MainActivity : AppCompatActivity(), SongClickListener {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             isBound = true
             playerService = (binder as PlayerService.LocalBinder).getService()
+            playerService!!.startForeground()
             Timber.d("player onServiceConnected $playerService")
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
+            Timber.d("player onServiceDisconnected")
             isBound = false
             playerService = null
         }
@@ -59,6 +61,11 @@ class MainActivity : AppCompatActivity(), SongClickListener {
         initViews()
         initRV()
         initSubscribe()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(applicationContext, PlayerService::class.java))
     }
 
     override fun onStart() {
